@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard – Task Manager</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            min-height: 100vh;
+            background: #0f172a;
+            font-family: 'Segoe UI', sans-serif;
+            color: #f8fafc;
+        }
+
+        /* NAVBAR */
+        .navbar {
+            background: #1e293b;
+            border-bottom: 1px solid #334155;
+            padding: 16px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .navbar h1 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #f8fafc;
+        }
+
+        .logout-btn {
+            padding: 8px 16px;
+            background: transparent;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            color: #94a3b8;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .logout-btn:hover {
+            border-color: #ef4444;
+            color: #ef4444;
+        }
+
+        /* MAIN */
+        .main {
+            max-width: 720px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        /* CREATE TASK */
+        .create-card {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 32px;
+        }
+
+        .create-card h2 {
+            font-size: 15px;
+            font-weight: 600;
+            color: #94a3b8;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .input-row input {
+            flex: 1;
+            min-width: 160px;
+            padding: 10px 14px;
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            color: #f8fafc;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .input-row input:focus { border-color: #6366f1; }
+        .input-row input::placeholder { color: #475569; }
+
+        .add-btn {
+            padding: 10px 20px;
+            background: #6366f1;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            white-space: nowrap;
+        }
+
+        .add-btn:hover { background: #4f46e5; }
+
+        /* TASKS */
+        .tasks-header {
+            font-size: 13px;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+
+        .task-card {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 18px 20px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            transition: border-color 0.2s;
+        }
+
+        .task-card:hover { border-color: #475569; }
+
+        .task-card.done { opacity: 0.5; }
+
+        .task-info { flex: 1; }
+
+        .task-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #f8fafc;
+            margin-bottom: 4px;
+        }
+
+        .task-card.done .task-title {
+            text-decoration: line-through;
+            color: #64748b;
+        }
+
+        .task-desc {
+            font-size: 13px;
+            color: #64748b;
+        }
+
+        .task-status {
+            font-size: 12px;
+            font-weight: 500;
+            padding: 3px 10px;
+            border-radius: 20px;
+            white-space: nowrap;
+        }
+
+        .status-pending {
+            background: #1c1917;
+            color: #f59e0b;
+            border: 1px solid #78350f;
+        }
+
+        .status-done {
+            background: #052e16;
+            color: #4ade80;
+            border: 1px solid #14532d;
+        }
+
+        .task-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-done {
+            padding: 6px 12px;
+            background: transparent;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            color: #4ade80;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-done:hover {
+            background: #052e16;
+            border-color: #4ade80;
+        }
+
+        .btn-delete {
+            padding: 6px 12px;
+            background: transparent;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            color: #f87171;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-delete:hover {
+            background: #450a0a;
+            border-color: #f87171;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 48px 0;
+            color: #475569;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <h1>Task Manager</h1>
+        <button class="logout-btn" id="logoutBtn">Sign Out</button>
+    </nav>
+
+    <div class="main">
+
+        <!-- Create Task -->
+        <div class="create-card">
+            <h2>New Task</h2>
+            <div class="input-row">
+                <input type="text" id="taskTitle" placeholder="Task title">
+                <input type="text" id="taskDesc" placeholder="Description">
+                <button class="add-btn" id="createTaskBtn">Add Task</button>
+            </div>
+        </div>
+
+        <!-- Task List -->
+        <div class="tasks-header">Your Tasks</div>
+        <div id="tasksList"></div>
+
+    </div>
+
+    <script src="/static/js/main.js"></script>
+</body>
+</html>
